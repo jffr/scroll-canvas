@@ -1,0 +1,46 @@
+/* Reset */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  height: 100%;
+  width: 100%;
+}
+
+/* Example specific styling */
+
+.root {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: auto;
+}
+
+.example {
+  background: #95999b;
+  height: 400vh;
+  text-align: center;
+}
+
+.example-wrapper {
+  align-items: center;
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  position: sticky;
+  top: 0;
+  width: 100%;
+}
+
+.example-canvas {
+  max-height: 100%;
+  max-width: 100%;
+}
