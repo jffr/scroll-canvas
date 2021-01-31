@@ -13,7 +13,7 @@ export default class ScrollCanvas {
   private readonly _rootElement: HTMLElement | Document;
   private _context: CanvasRenderingContext2D;
   private _images: HTMLImageElement[];
-  private _currentIndex: number;
+  private _currentIndex?: number;
   private _observer: IntersectionObserver;
 
   constructor (options: TScrollCanvasOptions) {
@@ -22,13 +22,11 @@ export default class ScrollCanvas {
     this._canvas.width = width;
     this._canvas.height = height;
     this._context = this._canvas.getContext('2d')!;
-    this._currentIndex = 0;
     this._rootElement = rootElement ? rootElement : document;
     this._containerElement = containerElement;
+    this._containerElement.style.height = '400vh';
     this._images = [];
     this.handleScroll = this.handleScroll.bind(this);
-
-    this._containerElement.style.height = '400vh';
 
     if (className) {
       this._canvas.classList.add(className);
@@ -36,12 +34,8 @@ export default class ScrollCanvas {
 
     if (this._rootElement instanceof HTMLElement) {
       const styles: Partial<CSSStyleDeclaration> = {
-        position: 'fixed',
-        top: '0',
-        left: '0',
-        right: '0',
-        bottom: '0',
-        overflow: 'auto'
+        height: '100vh',
+        overflowY: 'auto',
       };
       Object.assign(this._rootElement.style, styles);
     }
@@ -60,7 +54,7 @@ export default class ScrollCanvas {
     this.preloadImages(imagePaths).then((images) => {
       if (images.length === 0) throw new Error('There are no images loaded for the canvas.');
       this._images = images;
-      this._context.drawImage(this._images[0], 0, 0, this._canvas.width, this._canvas.height);
+      this.handleScroll();
       this._observer.observe(this._containerElement);
     });
   }

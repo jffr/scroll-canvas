@@ -2,7 +2,7 @@ import ScrollCanvas from 'scroll-canvas';
 
 const rootElement = document.querySelector('.root') as HTMLElement;
 const containerElement = document.querySelector('.example') as HTMLElement;
-const imagePaths = [...containerElement.getElementsByClassName('  example-image')].map(el => el.getAttribute('src'));
+const imagePaths = [...containerElement.getElementsByClassName('example-image')].map(el => el.getAttribute('src'));
 
 if (containerElement !== null) {
   const canvas = new ScrollCanvas({
@@ -19,3 +19,4 @@ if (containerElement !== null) {
   wrapper.append(canvas.canvas);
   console.log(canvas);
 }
+

@@ -15,6 +15,12 @@ body {
 
 /* Example specific styling */
 
+.box {
+  height: 120vh;
+  background: black;
+  color: #fff;
+}
+
 .example {
   background: #95999b;
   text-align: center;
