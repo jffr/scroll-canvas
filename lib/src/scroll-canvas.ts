@@ -3,7 +3,7 @@ type TScrollCanvasOptions = {
   height: number;
   imagePaths: string[];
   containerElement: HTMLElement;
-  rootElement: HTMLElement;
+  rootElement?: HTMLElement;
   className?: string;
 };
 
@@ -15,11 +15,10 @@ type TScrollCanvasOptions = {
 // TODO: Add error messages
 // TODO: Add IE11 support
 // TODO: Add demo images not from Maikel (or ask permission)
-// IDEA: Create React component?
 export default class ScrollCanvas {
   private readonly _canvas: HTMLCanvasElement;
   private readonly _containerElement: HTMLElement;
-  private readonly _rootElement: HTMLElement;
+  private readonly _rootElement: HTMLElement | Document;
   private _context: CanvasRenderingContext2D;
   private _images: HTMLImageElement[];
   private _currentIndex: number;
@@ -32,7 +31,7 @@ export default class ScrollCanvas {
     this._canvas.height = height;
     this._context = this._canvas.getContext('2d')!;
     this._currentIndex = 0;
-    this._rootElement = rootElement;
+    this._rootElement = rootElement ? rootElement : document;
     this._containerElement = containerElement;
     this._images = [];
     this.handleScroll = this.handleScroll.bind(this);
@@ -95,9 +94,10 @@ export default class ScrollCanvas {
 
   private handleScroll () {
     requestAnimationFrame(() => {
+      const scrollTop = this._rootElement instanceof HTMLElement ? this._rootElement.scrollTop : this._rootElement.documentElement.scrollTop;
       const frameCount = this._images.length;
       const maxScrollTop = this._containerElement.offsetHeight - window.innerHeight;
-      const scrollFraction = (this._rootElement.scrollTop - this._containerElement.offsetTop) / maxScrollTop;
+      const scrollFraction = (scrollTop - this._containerElement.offsetTop) / maxScrollTop;
       const frameIndex = Math.max(0, Math.min(frameCount - 1, Math.ceil(scrollFraction * frameCount)));
 
       if (frameIndex === this._currentIndex) return;
