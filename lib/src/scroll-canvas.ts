@@ -7,14 +7,6 @@ type TScrollCanvasOptions = {
   className?: string;
 };
 
-// TODO: GIT
-// TODO: Create read me for instructions
-// TODO: Make constructor less big
-// TODO: Fix issues with rootElement
-// TODO: Add necessary CSS to the containerElement
-// TODO: Add error messages
-// TODO: Add IE11 support
-// TODO: Add demo images not from Maikel (or ask permission)
 export default class ScrollCanvas {
   private readonly _canvas: HTMLCanvasElement;
   private readonly _containerElement: HTMLElement;
@@ -36,8 +28,22 @@ export default class ScrollCanvas {
     this._images = [];
     this.handleScroll = this.handleScroll.bind(this);
 
+    this._containerElement.style.height = '400vh';
+
     if (className) {
       this._canvas.classList.add(className);
+    }
+
+    if (this._rootElement instanceof HTMLElement) {
+      const styles: Partial<CSSStyleDeclaration> = {
+        position: 'fixed',
+        top: '0',
+        left: '0',
+        right: '0',
+        bottom: '0',
+        overflow: 'auto'
+      };
+      Object.assign(this._rootElement.style, styles);
     }
 
     this._observer = new IntersectionObserver(
