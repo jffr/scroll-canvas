@@ -11,6 +11,8 @@ export default class ScrollCanvas {
   private readonly _canvas: HTMLCanvasElement;
   private readonly _containerElement: HTMLElement;
   private readonly _rootElement: HTMLElement | Document;
+  private readonly _className: string;
+  private _wrapperElement: HTMLElement | undefined;
   private _context: CanvasRenderingContext2D;
   private _images: HTMLImageElement[];
   private _currentIndex?: number;
@@ -18,9 +20,12 @@ export default class ScrollCanvas {
 
   constructor (options: TScrollCanvasOptions) {
     const { width, height, imagePaths, className, rootElement, containerElement } = options;
+    this._className = className || 'cs';
     this._canvas = document.createElement('canvas');
     this._canvas.width = width;
     this._canvas.height = height;
+    this._canvas.style.maxWidth = '100%';
+    this._canvas.style.maxHeight = '100%';
     this._context = this._canvas.getContext('2d')!;
     this._rootElement = rootElement ? rootElement : document;
     this._containerElement = containerElement;
@@ -28,9 +33,7 @@ export default class ScrollCanvas {
     this._images = [];
     this.handleScroll = this.handleScroll.bind(this);
 
-    if (className) {
-      this._canvas.classList.add(className);
-    }
+    this._canvas.classList.add(`${this._className}__canvas`);
 
     if (this._rootElement instanceof HTMLElement) {
       const styles: Partial<CSSStyleDeclaration> = {
@@ -52,8 +55,11 @@ export default class ScrollCanvas {
     );
 
     this.preloadImages(imagePaths).then((images) => {
-      if (images.length === 0) throw new Error('There are no images loaded for the canvas.');
+      if (images.length === 0) {
+        throw new Error('There are no images loaded for the canvas.');
+      }
       this._images = images;
+      this.bootstrap();
       this.handleScroll();
       this._observer.observe(this._containerElement);
     });
@@ -66,7 +72,28 @@ export default class ScrollCanvas {
   destroy () {
     this._rootElement.removeEventListener('scroll', this.handleScroll);
     this._observer.unobserve(this._containerElement);
+    this._wrapperElement?.remove();
     this._canvas.remove();
+  }
+
+  private bootstrap () {
+    const wrapper = document.createElement('div');
+    wrapper.classList.add(this._className);
+    wrapper.append(this.canvas);
+    
+    const styles: Partial<CSSStyleDeclaration> = {
+      position: 'sticky',
+      top: '0',
+      height: '100vh',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center'
+    };
+    Object.assign(wrapper.style, styles);
+
+    this._containerElement.innerHTML = '';
+    this._containerElement.append(wrapper);
+    this._wrapperElement = wrapper;
   }
 
   private createImage (imagePath: string): Promise<HTMLImageElement> {

@@ -1,5 +1,3 @@
-/* Reset */
-
 * {
   box-sizing: border-box;
   margin: 0;
@@ -13,30 +11,17 @@ body {
   width: 100%;
 }
 
-/* Example specific styling */
-
 .box {
-  height: 120vh;
+  height: 100vh;
   background: black;
   color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  font-style: italic;
 }
 
 .example {
   background: #95999b;
-  text-align: center;
-}
-
-.example-wrapper {
-  align-items: center;
-  display: flex;
-  height: 100vh;
-  justify-content: center;
-  position: sticky;
-  top: 0;
-  width: 100%;
-}
-
-.example-canvas {
-  max-height: 100%;
-  max-width: 100%;
 }
