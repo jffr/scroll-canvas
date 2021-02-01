@@ -7,7 +7,7 @@ export default class ScrollCanvas {
   private _root: HTMLElement | Document;
   private _observer: IntersectionObserver;
   private _wrapperElement: HTMLElement;
-  private _containerElement: HTMLElement;
+  private _container: HTMLElement;
   private _images: HTMLImageElement[];
   private _currentIndex?: number;
 
@@ -32,10 +32,10 @@ export default class ScrollCanvas {
       this._canvas = this.createCanvas(width, height);
       this._wrapperElement = this.createWrapper(this._canvas);
       this._root = this.initializeRoot();
-      this._containerElement = this.initializeContainer();
+      this._container = this.initializeContainer();
 
       this._observer = this.createObserver(this._root);
-      this._observer.observe(this._containerElement);
+      this._observer.observe(this._container);
       this.handleScroll();
     });
   }
@@ -46,7 +46,7 @@ export default class ScrollCanvas {
 
   destroy() {
     this._root.removeEventListener('scroll', this.handleScroll);
-    this._observer.unobserve(this._containerElement);
+    this._observer.unobserve(this._container);
     this._wrapperElement?.remove();
     this._canvas.remove();
   }
@@ -162,11 +162,9 @@ export default class ScrollCanvas {
   private handleScroll() {
     requestAnimationFrame(() => {
       const frameCount = this._images.length;
-      const maxScrollTop =
-        this._containerElement.offsetHeight - window.innerHeight;
+      const maxScrollTop = this._container.offsetHeight - window.innerHeight;
       const scrollFraction =
-        (this.getRootScrollTop() - this._containerElement.offsetTop) /
-        maxScrollTop;
+        (this.getRootScrollTop() - this._container.offsetTop) / maxScrollTop;
       const frameIndex = Math.max(
         0,
         Math.min(frameCount - 1, Math.ceil(scrollFraction * frameCount))

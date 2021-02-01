@@ -1,5 +1,4 @@
 {
-  "exclude": ["example"],
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
