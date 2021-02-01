@@ -27,19 +27,19 @@ async function init() {
     import('./images/21.png'),
     import('./images/22.png'),
     import('./images/23.png'),
-    import('./images/24.png')
+    import('./images/24.png'),
   ]);
 
   if (!containerElement || !rootElement) {
     return;
   }
-  
+
   const canvas = new ScrollCanvas({
     containerElement: containerElement,
     rootElement: rootElement,
     width: 800,
     height: 800,
-    imagePaths: imagePaths.map((image) => image.default)
+    imagePaths: imagePaths.map((image) => image.default),
   });
 
   canvas.bootstrap();
