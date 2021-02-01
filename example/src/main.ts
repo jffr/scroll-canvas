@@ -1,6 +1,6 @@
 import ScrollCanvas from 'scroll-canvas';
 
-async function bootstrap() {
+async function init() {
   const rootElement = document.querySelector<HTMLElement>('.root');
   const containerElement = document.querySelector<HTMLElement>('.example');
   const imagePaths = await Promise.all([
@@ -41,6 +41,8 @@ async function bootstrap() {
     height: 800,
     imagePaths: imagePaths.map((image) => image.default)
   });
+
+  canvas.bootstrap();
 }
 
-bootstrap();
+init();

@@ -1,68 +1,42 @@
-type TScrollCanvasOptions = {
-  width: number;
-  height: number;
-  imagePaths: string[];
-  containerElement: HTMLElement;
-  rootElement?: HTMLElement;
-  className?: string;
-};
+import { TScrollCanvasOptions } from './typings';
 
 export default class ScrollCanvas {
-  private readonly _canvas: HTMLCanvasElement;
-  private readonly _containerElement: HTMLElement;
-  private readonly _rootElement: HTMLElement | Document;
   private readonly _className: string;
-  private _wrapperElement: HTMLElement | undefined;
-  private _context: CanvasRenderingContext2D;
+  private readonly _options: TScrollCanvasOptions;
+  private _canvas: HTMLCanvasElement;
+  private _root: HTMLElement | Document;
+  private _observer: IntersectionObserver;
+  private _wrapperElement: HTMLElement;
+  private _containerElement: HTMLElement;
   private _images: HTMLImageElement[];
   private _currentIndex?: number;
-  private _observer: IntersectionObserver;
 
   constructor (options: TScrollCanvasOptions) {
-    const { width, height, imagePaths, className, rootElement, containerElement } = options;
-    this._className = className || 'cs';
-    this._canvas = document.createElement('canvas');
-    this._canvas.width = width;
-    this._canvas.height = height;
-    this._canvas.style.maxWidth = '100%';
-    this._canvas.style.maxHeight = '100%';
-    this._context = this._canvas.getContext('2d')!;
-    this._rootElement = rootElement ? rootElement : document;
-    this._containerElement = containerElement;
-    this._containerElement.style.height = '400vh';
     this._images = [];
+    this._options = options;
+    this._className = options.className || 'cs';
     this.handleScroll = this.handleScroll.bind(this);
+  }
 
-    this._canvas.classList.add(`${this._className}__canvas`);
+  bootstrap () {
+    const { width, height, imagePaths } = this._options;
 
-    if (this._rootElement instanceof HTMLElement) {
-      const styles: Partial<CSSStyleDeclaration> = {
-        height: '100vh',
-        overflowY: 'auto',
-      };
-      Object.assign(this._rootElement.style, styles);
-    }
-
-    this._observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0]?.isIntersecting) {
-          this._rootElement.addEventListener('scroll', this.handleScroll, { passive: true });
-        } else {
-          this._rootElement.removeEventListener('scroll', this.handleScroll);
+    this.preloadImages(imagePaths)
+      .then((images) => {
+        if (images.length === 0) {
+          throw new Error('Preloading images has failed. There are no images provided for the canvas.');
         }
-      },
-      { threshold: [0, 1] }
-    );
 
-    this.preloadImages(imagePaths).then((images) => {
-      if (images.length === 0) {
-        throw new Error('There are no images loaded for the canvas.');
-      }
-      this._images = images;
-      this.bootstrap();
-      this.handleScroll();
-      this._observer.observe(this._containerElement);
-    });
+        this._images = images;
+        this._canvas = this.createCanvas(width, height);
+        this._wrapperElement = this.createWrapper(this._canvas);
+        this._root = this.initializeRoot();
+        this._containerElement = this.initializeContainer();
+    
+        this._observer = this.createObserver(this._root);
+        this._observer.observe(this._containerElement);
+        this.handleScroll();
+      });
   }
 
   get canvas () {
@@ -70,16 +44,67 @@ export default class ScrollCanvas {
   }
 
   destroy () {
-    this._rootElement.removeEventListener('scroll', this.handleScroll);
+    this._root.removeEventListener('scroll', this.handleScroll);
     this._observer.unobserve(this._containerElement);
     this._wrapperElement?.remove();
     this._canvas.remove();
   }
 
-  private bootstrap () {
+  private initializeRoot () {
+    const { rootElement } = this._options;
+    const root = rootElement ? rootElement : document;
+
+    if (root instanceof HTMLElement) {
+      const styles: Partial<CSSStyleDeclaration> = {
+        height: '100vh',
+        overflowY: 'auto',
+      };
+      Object.assign(root.style, styles);
+    }
+    
+    return root;
+  }
+
+  private initializeContainer () {
+    const { containerElement } = this._options;
+
+    if (containerElement.hasChildNodes()) {
+      console.error(`Container element should not have children. The space is reserved for the canvas.`, containerElement);
+    }
+
+    containerElement.style.height = '400vh';
+    containerElement.append(this._wrapperElement!);
+    return containerElement;
+  }
+
+  private createObserver (root: HTMLElement | Document) {
+    return new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          root.addEventListener('scroll', this.handleScroll, { passive: true });
+        } else {
+          root.removeEventListener('scroll', this.handleScroll);
+        }
+      },
+      { threshold: [0, 1] }
+    );
+  }
+
+  private createCanvas (width: number, height: number) {
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    canvas.classList.add(`${this._className}__canvas`);
+    canvas.style.maxWidth = '100%';
+    canvas.style.maxHeight = '100%';
+
+    return canvas;
+  }
+
+  private createWrapper (canvas: HTMLCanvasElement) {
     const wrapper = document.createElement('div');
     wrapper.classList.add(this._className);
-    wrapper.append(this.canvas);
+    wrapper.append(canvas);
     
     const styles: Partial<CSSStyleDeclaration> = {
       position: 'sticky',
@@ -91,9 +116,7 @@ export default class ScrollCanvas {
     };
     Object.assign(wrapper.style, styles);
 
-    this._containerElement.innerHTML = '';
-    this._containerElement.append(wrapper);
-    this._wrapperElement = wrapper;
+    return wrapper;
   }
 
   private createImage (imagePath: string): Promise<HTMLImageElement> {
@@ -107,8 +130,9 @@ export default class ScrollCanvas {
   }
 
   private updateImage (index: number) {
-    this._context.clearRect(0, 0, this._canvas.width, this._canvas.height);
-    this._context.drawImage(this._images[index], 0, 0, this._canvas.width, this._canvas.height);
+    const context = this._canvas.getContext('2d')!;
+    context.clearRect(0, 0, this._canvas.width, this._canvas.height);
+    context.drawImage(this._images[index], 0, 0, this._canvas.width, this._canvas.height);
   }
 
   private preloadImages (imagePaths: string[]) {
@@ -119,12 +143,15 @@ export default class ScrollCanvas {
     return Promise.all(images);
   }
 
+  private getRootScrollTop () {
+    return this._root instanceof HTMLElement ? this._root.scrollTop : this._root.documentElement.scrollTop;
+  }
+
   private handleScroll () {
     requestAnimationFrame(() => {
-      const scrollTop = this._rootElement instanceof HTMLElement ? this._rootElement.scrollTop : this._rootElement.documentElement.scrollTop;
       const frameCount = this._images.length;
       const maxScrollTop = this._containerElement.offsetHeight - window.innerHeight;
-      const scrollFraction = (scrollTop - this._containerElement.offsetTop) / maxScrollTop;
+      const scrollFraction = (this.getRootScrollTop() - this._containerElement.offsetTop) / maxScrollTop;
       const frameIndex = Math.max(0, Math.min(frameCount - 1, Math.ceil(scrollFraction * frameCount)));
 
       if (frameIndex === this._currentIndex) return;

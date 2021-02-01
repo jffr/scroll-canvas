@@ -4,6 +4,7 @@
     "target": "ESNext",
     "module": "ESNext",
     "strict": true,
+    "strictPropertyInitialization": false,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "declaration": true,
