@@ -3,11 +3,13 @@
   "version": "1.0.0",
   "description": "Scroll animation in canvas",
   "main": "dist/scroll-canvas.cjs.js",
+  "main:min": "dist/scroll-canvas.cjs.min.js",
   "module": "dist/scroll-canvas.es.js",
   "browser": "dist/scroll-canvas.umd.js",
+  "browser:min": "dist/scroll-canvas.umd.min.js",
   "types": "dist/scroll-canvas.d.ts",
   "scripts": {
-    "prettier": "prettier --write src/**", 
+    "prettier": "prettier --write src/**",
     "eslint": "eslint src/**",
     "build": "npm run prettier && npm run eslint && rollup -c",
     "dev": "npm run prettier && npm run eslint && rollup -c -w"
