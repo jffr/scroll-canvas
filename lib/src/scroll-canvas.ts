@@ -53,7 +53,7 @@ export default class ScrollCanvas {
 
   private initializeRoot() {
     const { rootElement } = this._options;
-    const root = rootElement ? rootElement : document;
+    const root = rootElement || document;
 
     if (root instanceof HTMLElement) {
       const styles: Partial<CSSStyleDeclaration> = {
