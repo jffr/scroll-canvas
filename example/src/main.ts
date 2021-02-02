@@ -40,6 +40,7 @@ async function init() {
     width: 800,
     height: 800,
     imagePaths: imagePaths.map((image) => image.default),
+    distance: 4
   });
 
   canvas.bootstrap();

@@ -3,6 +3,7 @@ export type TScrollCanvasOptions = {
   height: number;
   imagePaths: string[];
   containerElement: HTMLElement;
+  distance?: number;
   rootElement?: HTMLElement;
   className?: string;
 };

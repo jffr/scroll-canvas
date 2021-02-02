@@ -1,7 +1,6 @@
 import { TScrollCanvasOptions } from './typings';
 
 export default class ScrollCanvas {
-  private readonly _className: string;
   private readonly _options: TScrollCanvasOptions;
   private _canvas: HTMLCanvasElement;
   private _root: HTMLElement | Document;
@@ -13,8 +12,11 @@ export default class ScrollCanvas {
 
   constructor(options: TScrollCanvasOptions) {
     this._images = [];
-    this._options = options;
-    this._className = options.className || 'cs';
+    this._options = {
+      ...options,
+      distance: options?.distance ?? 4,
+      className: options?.className ?? 'cs',
+    };
     this.handleScroll = this.handleScroll.bind(this);
   }
 
@@ -76,7 +78,7 @@ export default class ScrollCanvas {
       );
     }
 
-    containerElement.style.height = '400vh';
+    containerElement.style.height = `${100 * this._options.distance!}vh`;
     containerElement.append(this._wrapperElement!);
     return containerElement;
   }
@@ -98,7 +100,7 @@ export default class ScrollCanvas {
     const canvas = document.createElement('canvas');
     canvas.width = width;
     canvas.height = height;
-    canvas.classList.add(`${this._className}__canvas`);
+    canvas.classList.add(`${this._options.className}__canvas`);
     canvas.style.maxWidth = '100%';
     canvas.style.maxHeight = '100%';
 
@@ -107,7 +109,7 @@ export default class ScrollCanvas {
 
   private createWrapper(canvas: HTMLCanvasElement) {
     const wrapper = document.createElement('div');
-    wrapper.classList.add(this._className);
+    wrapper.classList.add(this._options.className!);
     wrapper.append(canvas);
 
     const styles: Partial<CSSStyleDeclaration> = {
