@@ -54,33 +54,33 @@ export default class ScrollCanvas {
   }
 
   private initializeRoot() {
-    const { rootElement } = this._options;
-    const root = rootElement || document;
+    const { root } = this._options;
+    const rootElement = root || document;
 
-    if (root instanceof HTMLElement) {
+    if (rootElement instanceof HTMLElement) {
       const styles: Partial<CSSStyleDeclaration> = {
         height: '100vh',
         overflowY: 'auto',
       };
-      Object.assign(root.style, styles);
+      Object.assign(rootElement.style, styles);
     }
 
-    return root;
+    return rootElement;
   }
 
   private initializeContainer() {
-    const { containerElement } = this._options;
+    const { container } = this._options;
 
-    if (containerElement.hasChildNodes()) {
+    if (container.hasChildNodes()) {
       console.error(
         `Container element should not have children. The space is reserved for the canvas.`,
-        containerElement
+        container
       );
     }
 
-    containerElement.style.height = `${100 * this._options.distance!}vh`;
-    containerElement.append(this._wrapperElement!);
-    return containerElement;
+    container.style.height = `${100 * this._options.distance!}vh`;
+    container.append(this._wrapperElement!);
+    return container;
   }
 
   private createObserver(root: HTMLElement | Document) {

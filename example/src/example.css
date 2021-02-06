@@ -16,10 +16,23 @@ body {
   background: black;
   color: #fff;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   font-size: 2rem;
-  font-style: italic;
+}
+
+.small {
+  font-size: 1rem;
+}
+
+p {
+  margin: 0.5rem 0;
+}
+
+a {
+  color: #fff;
+  text-decoration: underline;
 }
 
 .example {

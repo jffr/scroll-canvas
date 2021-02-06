@@ -35,12 +35,12 @@ async function init() {
   }
 
   const canvas = new ScrollCanvas({
-    containerElement: containerElement,
-    rootElement: rootElement,
+    container: containerElement,
+    root: rootElement,
     width: 800,
     height: 800,
     imagePaths: imagePaths.map((image) => image.default),
-    distance: 4
+    distance: 3
   });
 
   canvas.bootstrap();
