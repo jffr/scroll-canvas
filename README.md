@@ -21,7 +21,7 @@ After installing the package you can import it into your project. Initialize `Sc
 ``` 
 
 ```typescript
-import scrollCanvas from 'scroll-canvas';
+import ScrollCanvas from 'scroll-canvas';
 
 const canvas = new ScrollCanvas({
   container: document.getElementById('canvas'),

@@ -1,6 +1,6 @@
 {
   "name": "scroll-canvas",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Scroll animation in canvas",
   "main": "dist/scroll-canvas.cjs.js",
   "main:min": "dist/scroll-canvas.cjs.min.js",
@@ -8,6 +8,10 @@
   "browser": "dist/scroll-canvas.umd.js",
   "browser:min": "dist/scroll-canvas.umd.min.js",
   "types": "dist/scroll-canvas.d.ts",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/jffr/scroll-canvas.git"
+  },  
   "scripts": {
     "prettier": "prettier --write src/**",
     "eslint": "eslint src/**",
