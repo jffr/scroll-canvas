@@ -5,7 +5,10 @@
 * No custom CSS needed;
 * Control the speed of the animation by providing the distance of the canvas;
 * Scroll Canvas will not calculate the frame positions when it is outside the viewport;
-* Example page to get you started.
+* Example page to get you started (see GIT project).
+
+## Example
+Visit the [demo page](https://scrollcanvasstorage.z6.web.core.windows.net/) to see Scroll Canvas in action! _Big props to [Maikel Kerkhoven](https://www.maikelkerkhoven.com) for the artwork._
 
 ## Install
 

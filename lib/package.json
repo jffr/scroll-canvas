@@ -1,6 +1,6 @@
 {
   "name": "scroll-canvas",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Scroll animation in canvas",
   "main": "dist/scroll-canvas.cjs.js",
   "main:min": "dist/scroll-canvas.cjs.min.js",

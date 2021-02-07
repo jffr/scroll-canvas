@@ -28,6 +28,7 @@ async function init() {
     import('./images/22.png'),
     import('./images/23.png'),
     import('./images/24.png'),
+    import('./images/01.png')
   ]);
 
   if (!containerElement || !rootElement) {
